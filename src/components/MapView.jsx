@@ -1,10 +1,10 @@
-// src/components/MapView.jsx
+
 import React, { useState } from 'react';
 import { MapContainer, TileLayer, Marker, Popup, useMapEvents } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
 
-// Fix for default marker icons in React Leaflet
+
 delete L.Icon.Default.prototype._getIconUrl;
 L.Icon.Default.mergeOptions({
   iconRetinaUrl: require('leaflet/dist/images/marker-icon-2x.png'),
@@ -32,8 +32,8 @@ const MapView = () => {
         lat: marker.position[0],
         lng: marker.position[1]
       });
-      // Here you could also send the coordinates to a parent component
-      // or trigger other actions with the exact coordinates
+      
+      
     }
   };
 
@@ -52,7 +52,7 @@ const MapView = () => {
         {marker && (
           <Marker position={marker.position}>
             <Popup>
-              Selected Location
+              Your Guess
             </Popup>
           </Marker>
         )}
