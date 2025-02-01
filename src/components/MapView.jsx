@@ -40,7 +40,7 @@ const MapView = () => {
   return (
     <div style={{ position: 'absolute', right: 0, width: '50%', height: '100vh' }}>
       <MapContainer
-        center={[51.505, -0.09]} // Default to London coordinates - adjust as needed
+        center={[40.5008, -74.4474]}
         zoom={13}
         style={{ height: '100%', width: '100%' }}
       >

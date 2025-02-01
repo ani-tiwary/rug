@@ -6,6 +6,9 @@ import { TextureLoader, BackSide } from 'three';
 const PhotoSphere = ({ imageUrl }) => {
   // Load the panoramic texture
   const texture = useLoader(TextureLoader, imageUrl);
+  
+  // Flip the texture horizontally
+  texture.flipX = true;
 
   return (
     <mesh>

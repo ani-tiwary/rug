@@ -6,9 +6,14 @@ import PhotoSphere from './PhotoSphere';
 
 const PhotoSphereView = () => {
   return (
-    <Canvas camera={{ position: [0, 0, 0.1] }}>
+    <Canvas camera={{ position: [0, 0, 0.001] }}>
       <PhotoSphere imageUrl="/ps/ps1.jpg" />
-      <OrbitControls enableZoom={false} enablePan={false} rotateSpeed={0.4} />
+      <OrbitControls 
+        enableZoom={false} 
+        enablePan={false} 
+        rotateSpeed={0.5}
+        reverseOrbit={true} 
+      />
     </Canvas>
   );
 };
