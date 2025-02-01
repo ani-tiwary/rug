@@ -1,6 +1,6 @@
 // src/components/MapView.jsx
-import React from 'react';
-import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
+import React, { useState } from 'react';
+import { MapContainer, TileLayer, Marker, Popup, useMapEvents } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
 
@@ -13,6 +13,18 @@ L.Icon.Default.mergeOptions({
 });
 
 const MapView = () => {
+  const [markers, setMarkers] = useState([]);
+
+  function MapEvents() {
+    useMapEvents({
+      click(e) {
+        const { lat, lng } = e.latlng;
+        setMarkers(current => [...current, { position: [lat, lng] }]);
+      }
+    });
+    return null;
+  }
+
   return (
     <div style={{ position: 'absolute', right: 0, width: '50%', height: '100vh' }}>
       <MapContainer
@@ -20,15 +32,18 @@ const MapView = () => {
         zoom={13}
         style={{ height: '100%', width: '100%' }}
       >
+        <MapEvents />
         <TileLayer
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         />
-        <Marker position={[51.505, -0.09]}>
-          <Popup>
-            A sample marker
-          </Popup>
-        </Marker>
+        {markers.map((marker, index) => (
+          <Marker key={index} position={marker.position}>
+            <Popup>
+              Marker {index + 1}
+            </Popup>
+          </Marker>
+        ))}
       </MapContainer>
     </div>
   );
