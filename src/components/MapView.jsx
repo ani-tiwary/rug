@@ -13,17 +13,29 @@ L.Icon.Default.mergeOptions({
 });
 
 const MapView = () => {
-  const [markers, setMarkers] = useState([]);
+  const [marker, setMarker] = useState(null);
+  const [savedCoords, setSavedCoords] = useState(null);
 
   function MapEvents() {
     useMapEvents({
       click(e) {
         const { lat, lng } = e.latlng;
-        setMarkers(current => [...current, { position: [lat, lng] }]);
+        setMarker({ position: [lat, lng] });
       }
     });
     return null;
   }
+
+  const handleGuess = () => {
+    if (marker) {
+      setSavedCoords({
+        lat: marker.position[0],
+        lng: marker.position[1]
+      });
+      // Here you could also send the coordinates to a parent component
+      // or trigger other actions with the exact coordinates
+    }
+  };
 
   return (
     <div style={{ position: 'absolute', right: 0, width: '50%', height: '100vh' }}>
@@ -37,14 +49,27 @@ const MapView = () => {
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         />
-        {markers.map((marker, index) => (
-          <Marker key={index} position={marker.position}>
+        {marker && (
+          <Marker position={marker.position}>
             <Popup>
-              Marker {index + 1}
+              Selected Location
             </Popup>
           </Marker>
-        ))}
+        )}
       </MapContainer>
+      <button
+        onClick={handleGuess}
+        style={{
+          position: 'absolute',
+          bottom: '20px',
+          right: '20px',
+          padding: '10px 20px',
+          fontSize: '16px',
+          zIndex: 1000
+        }}
+      >
+        Guess
+      </button>
     </div>
   );
 };
