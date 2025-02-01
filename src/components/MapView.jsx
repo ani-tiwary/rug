@@ -1,44 +1,36 @@
 // src/components/MapView.jsx
-import React, { useEffect } from 'react';
-import { Canvas, useThree } from '@react-three/fiber';
-import { gsap } from 'gsap';
+import React from 'react';
+import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
+import 'leaflet/dist/leaflet.css';
+import L from 'leaflet';
 
-const MapScene = () => {
-  const { camera } = useThree();
-
-  useEffect(() => {
-    // Animate the camera from its initial position ([0, 0, 5]) to a top-down view.
-    // In a top-down view, we position the camera high on the Y axis and very close to zero on Z.
-    gsap.to(camera.position, {
-      duration: 1.5,
-      x: 0,
-      y: 10,
-      z: 0.1,
-      ease: 'power2.out',
-      onUpdate: () => {
-        camera.lookAt(0, 0, 0);
-      },
-    });
-  }, [camera]);
-
-  return (
-    <>
-      <ambientLight intensity={0.5} />
-      <pointLight position={[10, 10, 10]} />
-      {/* The cube (map placeholder) */}
-      <mesh>
-        <boxGeometry args={[2, 2, 2]} />
-        <meshStandardMaterial color="blue" />
-      </mesh>
-    </>
-  );
-};
+// Fix for default marker icons in React Leaflet
+delete L.Icon.Default.prototype._getIconUrl;
+L.Icon.Default.mergeOptions({
+  iconRetinaUrl: require('leaflet/dist/images/marker-icon-2x.png'),
+  iconUrl: require('leaflet/dist/images/marker-icon.png'),
+  shadowUrl: require('leaflet/dist/images/marker-shadow.png'),
+});
 
 const MapView = () => {
   return (
-    <Canvas camera={{ position: [0, 0, 5] }}>
-      <MapScene />
-    </Canvas>
+    <div style={{ position: 'absolute', right: 0, width: '50%', height: '100vh' }}>
+      <MapContainer
+        center={[51.505, -0.09]} // Default to London coordinates - adjust as needed
+        zoom={13}
+        style={{ height: '100%', width: '100%' }}
+      >
+        <TileLayer
+          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        />
+        <Marker position={[51.505, -0.09]}>
+          <Popup>
+            A sample marker
+          </Popup>
+        </Marker>
+      </MapContainer>
+    </div>
   );
 };
 
