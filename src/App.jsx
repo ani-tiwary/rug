@@ -9,31 +9,75 @@ import './App.css';
 
 function App() {
   const [mode, setMode] = useState('intro'); // 'intro' or 'split'
+  const [score, setScore] = useState(0); // Add score state
   const mapContainerRef = useRef(null);
   const photoContainerRef = useRef(null);
 
   // This handler fires when the user clicks Play.
   const handlePlay = () => {
-    // Switch mode; we’ll then animate the layout in useEffect.
+    // Switch mode; we'll then animate the layout in useEffect.
     setMode('split');
   };
 
   // When mode changes to split, animate the containers.
   useEffect(() => {
     if (mode === 'split') {
-      // Animate the map container (which was full width) to now take 50% of the width.
-      gsap.to(mapContainerRef.current, { duration: 1, width: '50%', ease: 'power2.out' });
-      // Animate the photo container from 0 width to 50%.
       gsap.fromTo(
         photoContainerRef.current,
-        { width: 0, opacity: 0 },
-        { duration: 1, width: '50%', opacity: 1, ease: 'power2.out' }
+        { opacity: 0 },
+        { duration: 1, opacity: 1, ease: 'power2.out' }
       );
     }
   }, [mode]);
 
+  const topBarStyle = {
+    position: 'fixed',
+    top: '10px',
+    left: '50%',
+    transform: 'translateX(-50%)',
+    width: '90%',
+    height: '60px',
+    backgroundColor: 'rgba(0, 0, 0, 0.8)',
+    borderRadius: '30px',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: '0 30px',
+    zIndex: 2000,
+    boxShadow: '0 2px 10px rgba(0, 0, 0, 0.3)'
+  };
+
+  const logoStyle = {
+    height: '40px',
+    width: '40px',
+    borderRadius: '50%',
+    overflow: 'hidden',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center'
+  };
+
+  const scoreStyle = {
+    color: 'white',
+    fontSize: '18px',
+    fontWeight: 'bold'
+  };
+
+  const rightSectionStyle = {
+    width: '40px', // Match logo width for symmetry
+    height: '40px'
+  };
+
   return (
     <div className="App" style={{ height: '100vh', width: '100vw', overflow: 'hidden' }}>
+      {mode !== 'intro' && (
+        <div style={topBarStyle}>
+          <div style={scoreStyle}>
+            Score: {score}
+          </div>
+        </div>
+      )}
+
       {mode === 'intro' ? (
         // Intro mode: a full-screen map (cube) with a Play button overlay.
         <div style={{ position: 'relative', width: '100%', height: '100%' }}>
@@ -66,14 +110,12 @@ function App() {
           </button>
         </div>
       ) : (
-        // Split mode: two side-by-side views.
-        <div style={{ display: 'flex', width: '100%', height: '100%' }}>
-          {/* Left side: PhotoSphere view */}
-          <div ref={photoContainerRef} style={{ width: '50%', height: '100%' }}>
+        // New layout with full-screen PhotoSphere and overlay map
+        <div style={{ position: 'relative', width: '100%', height: '100%' }}>
+          <div ref={photoContainerRef} style={{ width: '100%', height: '100%' }}>
             <PhotoSphereView />
           </div>
-          {/* Right side: Map view in top-down perspective */}
-          <div ref={mapContainerRef} style={{ width: '50%', height: '100%' }}>
+          <div ref={mapContainerRef} style={{ position: 'absolute', bottom: 20, right: 20 }}>
             <MapView />
           </div>
         </div>
