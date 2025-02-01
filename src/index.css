@@ -1,0 +1,17 @@
+/* src/index.css */
+
+html,
+body,
+#root {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+  background: #000; /* A dark background to simulate outer space */
+}
+
+.App {
+  height: 100%;
+  width: 100%;
+}
