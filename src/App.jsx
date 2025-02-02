@@ -121,12 +121,13 @@ function App() {
   };
 
   return (
-    <div className="App" style={{ height: '100vh', width: '100vw', overflow: 'hidden' }}>
+    <div className="App" style={{ height: '100vh', width: '100vw', overflow: 'hidden', position: 'relative' }}>
       {mode === 'welcome' ? (
         <div style={{
           height: '100vh',
           width: '100vw',
-          background: 'linear-gradient(135deg, #cc0033 0%, #990000 100%)',
+          position: 'relative',
+          overflow: 'hidden',
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
@@ -134,19 +135,59 @@ function App() {
           color: 'white',
           padding: '20px'
         }}>
+          <div style={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            width: '100%',
+            height: '100%',
+            overflow: 'hidden',
+            zIndex: 0 // Ensures it's behind all other elements
+          }}>
+            <iframe
+              width="100%"
+              height="100%"
+              src="https://www.youtube.com/embed/QzyvqID1feA?autoplay=1&mute=1&loop=1&playlist=QzyvqID1feA&controls=0&showinfo=0&modestbranding=1"
+              frameBorder="0"
+              allow="autoplay; encrypted-media"
+              allowFullScreen
+              style={{
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                width: '100%',
+                height: '100%',
+                objectFit: 'fill',
+                pointerEvents: 'none' // Prevents user interaction
+              }}
+            ></iframe>
+          </div>
+
+
           <h1 style={{
             fontSize: '4rem',
             marginBottom: '20px',
-            textShadow: '2px 2px 4px rgba(0,0,0,0.3)'
+            textShadow: '2px 2px 4px rgba(0,0,0,0.3)',
+            zIndex: 1,
+            color: 'black',
+            backgroundColor: 'rgba(255, 255, 255, 0.7)', // Slight transparent gray background
+          borderRadius: '10px', // Rounded corners for the background
+          padding: '10px', // Padding around the text
           }}>
             Rutgers GeoGuessr
           </h1>
           <p style={{
             fontSize: '1.5rem',
+            color: 'black',
             maxWidth: '600px',
             textAlign: 'center',
             marginBottom: '40px',
-            lineHeight: '1.6'
+            lineHeight: '1.6',
+            zIndex: 1,
+            // add slight transparent gray background for text
+          backgroundColor: 'rgba(255, 255, 255, 0.7)', // Slight transparent gray background
+          borderRadius: '10px', // Rounded corners for the background
+          padding: '10px', // Padding around the text
           }}>
             Test your knowledge of the Rutgers campus! Navigate through 360° images and guess their locations. How well do you know your university?
           </p>
@@ -162,7 +203,8 @@ function App() {
               cursor: 'pointer',
               transition: 'all 0.3s ease',
               boxShadow: '0 4px 6px rgba(0,0,0,0.2)',
-              fontWeight: 'bold'
+              fontWeight: 'bold',
+              zIndex: 1
             }}
             onMouseEnter={(e) => {
               e.currentTarget.style.transform = 'translateY(-2px)';
@@ -179,7 +221,8 @@ function App() {
             position: 'absolute',
             bottom: '20px',
             fontSize: '0.9rem',
-            opacity: 0.8
+            opacity: 0.8,
+            zIndex: 1
           }}>
             Created by Students, for Students
           </div>
