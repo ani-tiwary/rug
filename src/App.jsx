@@ -47,10 +47,12 @@ function App() {
   const handleGuess = (guessCoords) => {
     const newScore = calculateScore(guessCoords.lat, guessCoords.lng);
     setScore(prevScore => prevScore + newScore);
-    
+  };
+
+  const handleNext = () => {
     // Optional: Move to next location
     setCurrentLocation(prev => (prev + 1) % locations.length);
-  };
+  }
 
   // This handler fires when the user clicks Play.
   const handlePlay = () => {
@@ -155,7 +157,7 @@ function App() {
             <PhotoSphereView imageUrl={locations[currentLocation].imageUrl} />
           </div>
           <div ref={mapContainerRef} style={{ position: 'absolute', bottom: 20, right: 20 }}>
-            <MapView onGuess={handleGuess} />
+            <MapView onGuess={handleGuess} onNext={handleNext} currentLocation={currentLocation} />
           </div>
         </div>
       )}

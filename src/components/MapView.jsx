@@ -1,7 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { MapContainer, TileLayer, Marker, Popup, useMapEvents, useMap } from 'react-leaflet';
+import { MapContainer, TileLayer, Marker, Popup, useMapEvents, useMap, Polyline } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
+
+// import locations
+import { locations } from '../data/locations';
 
 
 delete L.Icon.Default.prototype._getIconUrl;
@@ -23,9 +26,22 @@ function MapResizer({ isExpanded }) {
   return null;
 }
 
-const MapView = ({ onGuess }) => {
+const MapView = ({ onGuess, onNext, currentLocation }) => {
   const [marker, setMarker] = useState(null);
   const [isExpanded, setIsExpanded] = useState(false);
+  const [guessedName, setGuessedName] = useState(null);
+  const [showRealLocation, setShowRealLocation] = useState(false);
+  const [guessMade, setGuessMade] = useState(false);
+
+  useEffect(() => {
+    if (guessedName) {
+      const timer = setTimeout(() => {
+        setGuessedName(null);
+        setShowRealLocation(false);
+      }, 5000);
+      return () => clearTimeout(timer);
+    }
+  }, [guessedName]);
 
   function MapEvents() {
     useMapEvents({
@@ -39,13 +55,29 @@ const MapView = ({ onGuess }) => {
 
   const handleGuess = () => {
     if (marker) {
+      setGuessedName(locations[currentLocation].name);
+      setShowRealLocation(true);
       onGuess({
         lat: marker.position[0],
         lng: marker.position[1]
       });
-      setMarker(null);  // Reset marker after guess
+      setGuessMade(true);
     }
   };
+
+  const handleNext = () => {
+    if (guessMade) {
+      onNext({
+        lat: marker.position[0],
+        lng: marker.position[1]
+      });
+      setMarker(null);
+      setGuessMade(false);
+      setShowRealLocation(false);
+    }
+  };
+
+  const actualLocation = locations[currentLocation].coordinates;
 
   const containerStyle = {
     position: 'relative',
@@ -102,6 +134,14 @@ const MapView = ({ onGuess }) => {
               <Popup>Your Guess</Popup>
             </Marker>
           )}
+          {showRealLocation && (
+            <Marker position={[actualLocation.lat, actualLocation.lng]} icon={L.divIcon({ className: 'answer-marker', iconSize: [25, 25] })}>
+              <Popup>{locations[currentLocation].name}</Popup>
+            </Marker>
+          )}
+          {marker && showRealLocation && (
+            <Polyline positions={[marker.position, [actualLocation.lat, actualLocation.lng]]} color="blue" />
+          )}
         </MapContainer>
         <button
           onClick={handleGuess}
@@ -131,6 +171,41 @@ const MapView = ({ onGuess }) => {
         >
           Make Guess
         </button>
+        {guessMade && (
+          <button
+            onClick={handleNext}
+            style={{
+              position: 'absolute',
+              bottom: 0,
+              left: 0,
+              right: 0,
+              padding: '15px 30px',
+              fontSize: '18px',
+              fontWeight: 'bold',
+              backgroundColor: '#007bff',
+              color: 'white',
+              border: 'none',
+              borderRadius: '8px 8px 0 0',
+              cursor: 'pointer',
+              boxShadow: '0 -4px 6px rgba(0, 0, 0, 0.1)',
+              transition: 'all 0.2s ease',
+              zIndex: 1000
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.backgroundColor = '#0056b3';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.backgroundColor = '#007bff';
+            }}
+          >
+            Next Location
+          </button>
+        )}
+        {guessedName && (
+          <div style={{ position: 'absolute', top: 10, left: 10, color: 'white', backgroundColor: 'rgba(0, 0, 0, 0.7)', padding: '10px', borderRadius: '5px' }}>
+            You guessed: {guessedName}
+          </div>
+        )}
       </div>
     </div>
   );

@@ -36,3 +36,10 @@
     transform: rotate(360deg);
   }
 }
+
+.answer-marker {
+  background-color: green; /* Color for the answer marker */
+  border-radius: 50%;
+  width: 12px;
+  height: 12px;
+}

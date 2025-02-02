@@ -1,6 +1,7 @@
 export const locations = [
   {
     id: 1,
+    name: "Location 1",
     imageUrl: '/ps/ps1.jpg',
     coordinates: {
       lat: 40.523300,
@@ -9,6 +10,7 @@ export const locations = [
   },
   {
     id: 2,
+    name: "Location 2",
     imageUrl: '/ps/ps2.jpg',
     coordinates: {
       lat: 40.519268,
@@ -17,6 +19,7 @@ export const locations = [
   },
   {
     id: 3,
+    name: 'Location 3',
     imageUrl: '/ps/ps3.jpg',
     coordinates: {
       lat: 40.521945,
@@ -25,6 +28,7 @@ export const locations = [
   },
   {
     id: 4,
+    name: 'Location 3',
     imageUrl: '/ps/ps4.jpg',
     coordinates: {
       lat: 40.523109,
@@ -33,6 +37,7 @@ export const locations = [
   },
   {
     id: 5,
+    name: 'Location 3',
     imageUrl: '/ps/ps5.jpg',
     coordinates: {
       lat: 40.523497843304845,
@@ -41,6 +46,7 @@ export const locations = [
   },
   {
     id: 6,
+    name: 'Location 3',
     imageUrl: '/ps/ps6.jpg',
     coordinates: {
       lat: 40.52342648340755,
@@ -49,6 +55,7 @@ export const locations = [
   },
   {
     id: 7,
+    name: 'Location 3',
     imageUrl: '/ps/ps7.jpg',
     coordinates: {
       lat: 40.52180041113144,
@@ -57,6 +64,7 @@ export const locations = [
   },
   {
     id: 8,
+    name: 'Location 3',
     imageUrl: '/ps/ps8.jpg',
     coordinates: {
       lat: 40.4766603552229,
@@ -65,6 +73,7 @@ export const locations = [
   },
   {
     id: 9,
+    name: 'Location 3',
     imageUrl: '/ps/ps9.jpg',
     coordinates: {
       lat: 40.484102617989905,
@@ -73,6 +82,7 @@ export const locations = [
   },
   {
     id: 10,
+    name: 'Location 3',
     imageUrl: '/ps/ps10.jpg',
     coordinates: {
       lat: 40.4822499501535,
