@@ -11,14 +11,23 @@ import { locations } from './data/locations';
 function App() {
   const [mode, setMode] = useState('welcome');
   const [score, setScore] = useState(0);
+  const [maxScore, setMaxScore] = useState(5000);
   const [currentLocation, setCurrentLocation] = useState(0);
+  const [isGameOver, setIsGameOver] = useState(false);
+  const [shuffledLocations, setShuffledLocations] = useState([]);
   const mapContainerRef = useRef(null);
   const photoContainerRef = useRef(null);
 
+  // Add this useEffect for shuffling locations when game starts
+  useEffect(() => {
+    const shuffled = [...locations].sort(() => Math.random() - 0.5);
+    setShuffledLocations(shuffled);
+  }, []);
+
   // Calculate score based on distance
   const calculateScore = (guessLat, guessLng) => {
-    const actualLat = locations[currentLocation].coordinates.lat;
-    const actualLng = locations[currentLocation].coordinates.lng;
+    const actualLat = shuffledLocations[currentLocation].coordinates.lat;
+    const actualLng = shuffledLocations[currentLocation].coordinates.lng;
     
     // Calculate distance using Haversine formula (in meters)
     const R = 6371e3; // Earth's radius in meters
@@ -50,9 +59,14 @@ function App() {
   };
 
   const handleNext = () => {
-    // Optional: Move to next location
-    setCurrentLocation(prev => (prev + 1) % locations.length);
-  }
+    if (currentLocation === locations.length - 1) {
+      setIsGameOver(true);
+      setMode('gameover');
+    } else {
+      setCurrentLocation(prev => prev + 1);
+      setMaxScore(prevMax => Math.min(prevMax + 5000, 50000));
+    }
+  };
 
   const handleStartGame = () => {
     setMode('split');
@@ -71,13 +85,12 @@ function App() {
 
   const topBarStyle = {
     position: 'fixed',
-    top: '10px',
+    top: '0',
     left: '50%',
     transform: 'translateX(-50%)',
-    width: '90%',
-    height: '60px',
-    backgroundColor: 'rgba(0, 0, 0, 0.8)',
-    borderRadius: '30px',
+    width: '100%',
+    height: '80px',
+    backgroundColor: '#cc0033',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
@@ -98,7 +111,7 @@ function App() {
 
   const scoreStyle = {
     color: 'white',
-    fontSize: '18px',
+    fontSize: '32px',
     fontWeight: 'bold'
   };
 
@@ -171,16 +184,77 @@ function App() {
             Created by Students, for Students
           </div>
         </div>
+      ) : mode === 'gameover' ? (
+        <div style={{
+          height: '100vh',
+          width: '100vw',
+          background: 'linear-gradient(135deg, #cc0033 0%, #990000 100%)',
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'center',
+          color: 'white',
+          padding: '20px'
+        }}>
+          <h1 style={{
+            fontSize: '4rem',
+            marginBottom: '20px',
+            textShadow: '2px 2px 4px rgba(0,0,0,0.3)'
+          }}>
+            Thanks for Playing!
+          </h1>
+          <p style={{
+            fontSize: '2rem',
+            marginBottom: '20px',
+            textShadow: '1px 1px 2px rgba(0,0,0,0.3)'
+          }}>
+            You Scored: {score}/50000
+          </p>
+          <p style={{
+            fontSize: '1.5rem',
+            marginBottom: '40px'
+          }}>
+            {score >= 45000 ? "Wow! You're a Rutgers Expert! 🏆" :
+             score >= 35000 ? "Great job! You know your campus well! 🎓" :
+             score >= 25000 ? "Not bad! You're getting there! 📚" :
+             "Keep exploring the campus! 🗺️"}
+          </p>
+          <button
+            onClick={() => window.location.reload()}
+            style={{
+              padding: '15px 40px',
+              fontSize: '1.5rem',
+              backgroundColor: 'white',
+              color: '#cc0033',
+              border: 'none',
+              borderRadius: '30px',
+              cursor: 'pointer',
+              transition: 'all 0.3s ease',
+              boxShadow: '0 4px 6px rgba(0,0,0,0.2)',
+              fontWeight: 'bold'
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.transform = 'translateY(-2px)';
+              e.currentTarget.style.boxShadow = '0 6px 8px rgba(0,0,0,0.3)';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.transform = 'translateY(0)';
+              e.currentTarget.style.boxShadow = '0 4px 6px rgba(0,0,0,0.2)';
+            }}
+          >
+            Play Again
+          </button>
+        </div>
       ) : (
         <>
           <div style={topBarStyle}>
             <div style={scoreStyle}>
-              Score: {score}
+              Score: {score}/{maxScore}
             </div>
           </div>
           <div style={{ position: 'relative', width: '100%', height: '100%' }}>
             <div ref={photoContainerRef} style={{ width: '100%', height: '100%' }}>
-              <PhotoSphereView imageUrl={locations[currentLocation].imageUrl} />
+              <PhotoSphereView imageUrl={shuffledLocations[currentLocation].imageUrl} />
             </div>
             <div ref={mapContainerRef} style={{ position: 'absolute', bottom: 20, right: 20 }}>
               <MapView onGuess={handleGuess} onNext={handleNext} currentLocation={currentLocation} />
