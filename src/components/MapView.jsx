@@ -4,7 +4,7 @@ import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
 
 // import locations
-import { locations } from '../data/locations';
+// import { locations } from '../data/locations';
 
 
 delete L.Icon.Default.prototype._getIconUrl;
@@ -26,12 +26,13 @@ function MapResizer({ isExpanded }) {
   return null;
 }
 
-const MapView = ({ onGuess, onNext, currentLocation }) => {
+const MapView = ({ onGuess, onNext, currentLocation, locations }) => {
   const [marker, setMarker] = useState(null);
   const [isExpanded, setIsExpanded] = useState(false);
   const [guessedName, setGuessedName] = useState(null);
   const [showRealLocation, setShowRealLocation] = useState(false);
   const [guessMade, setGuessMade] = useState(false);
+  const [showBlurb, setShowBlurb] = useState(false);
 
   useEffect(() => {
     if (guessedName) {
@@ -62,6 +63,7 @@ const MapView = ({ onGuess, onNext, currentLocation }) => {
         lng: marker.position[1]
       });
       setGuessMade(true);
+      setShowBlurb(true);
     }
   };
 
@@ -74,6 +76,7 @@ const MapView = ({ onGuess, onNext, currentLocation }) => {
       setMarker(null);
       setGuessMade(false);
       setShowRealLocation(false);
+      setShowBlurb(false);
     }
   };
 
@@ -204,6 +207,25 @@ const MapView = ({ onGuess, onNext, currentLocation }) => {
         {guessedName && (
           <div style={{ position: 'absolute', top: 10, left: 10, color: 'white', backgroundColor: 'rgba(0, 0, 0, 0.7)', padding: '10px', borderRadius: '5px' }}>
             You guessed: {guessedName}
+          </div>
+        )}
+        {showBlurb && (
+          <div style={{
+            position: 'absolute',
+            bottom: guessMade ? '60px' : '80px',
+            left: '10px',
+            right: '10px',
+            backgroundColor: 'rgba(0, 0, 0, 0.9)',
+            color: 'white',
+            padding: '20px',
+            borderRadius: '8px',
+            fontSize: '18px',
+            lineHeight: '1.6',
+            zIndex: 1001,
+            textAlign: 'left',
+            boxShadow: '0 4px 6px rgba(0, 0, 0, 0.2)'
+          }}>
+            {locations[currentLocation].blurb}
           </div>
         )}
       </div>

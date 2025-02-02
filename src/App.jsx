@@ -257,7 +257,12 @@ function App() {
               <PhotoSphereView imageUrl={shuffledLocations[currentLocation].imageUrl} />
             </div>
             <div ref={mapContainerRef} style={{ position: 'absolute', bottom: 20, right: 20 }}>
-              <MapView onGuess={handleGuess} onNext={handleNext} currentLocation={currentLocation} />
+              <MapView 
+                onGuess={handleGuess} 
+                onNext={handleNext} 
+                currentLocation={currentLocation}
+                locations={shuffledLocations}
+              />
             </div>
           </div>
         </>
