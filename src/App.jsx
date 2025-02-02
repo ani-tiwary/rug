@@ -174,7 +174,7 @@ function App() {
           borderRadius: '10px', // Rounded corners for the background
           padding: '10px', // Padding around the text
           }}>
-            Rutgers GeoGuessr
+            RuGuessr
           </h1>
           <p style={{
             fontSize: '1.5rem',
