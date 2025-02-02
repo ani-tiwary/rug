@@ -23,9 +23,8 @@ function MapResizer({ isExpanded }) {
   return null;
 }
 
-const MapView = () => {
+const MapView = ({ onGuess }) => {
   const [marker, setMarker] = useState(null);
-  const [savedCoords, setSavedCoords] = useState(null);
   const [isExpanded, setIsExpanded] = useState(false);
 
   function MapEvents() {
@@ -40,10 +39,11 @@ const MapView = () => {
 
   const handleGuess = () => {
     if (marker) {
-      setSavedCoords({
+      onGuess({
         lat: marker.position[0],
         lng: marker.position[1]
       });
+      setMarker(null);  // Reset marker after guess
     }
   };
 

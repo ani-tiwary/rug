@@ -6,12 +6,51 @@ import PhotoSphereView from './components/PhotoSphereView';
 import { Canvas } from '@react-three/fiber';
 import { OrbitControls } from '@react-three/drei'; // for debugging in intro
 import './App.css';
+import { locations } from './data/locations';
 
 function App() {
   const [mode, setMode] = useState('intro'); // 'intro' or 'split'
   const [score, setScore] = useState(0); // Add score state
+  const [currentLocation, setCurrentLocation] = useState(0); // Index of current location
   const mapContainerRef = useRef(null);
   const photoContainerRef = useRef(null);
+
+  // Calculate score based on distance
+  const calculateScore = (guessLat, guessLng) => {
+    const actualLat = locations[currentLocation].coordinates.lat;
+    const actualLng = locations[currentLocation].coordinates.lng;
+    
+    // Calculate distance using Haversine formula (in meters)
+    const R = 6371e3; // Earth's radius in meters
+    const φ1 = guessLat * Math.PI/180;
+    const φ2 = actualLat * Math.PI/180;
+    const Δφ = (actualLat-guessLat) * Math.PI/180;
+    const Δλ = (actualLng-guessLng) * Math.PI/180;
+
+    const a = Math.sin(Δφ/2) * Math.sin(Δφ/2) +
+              Math.cos(φ1) * Math.cos(φ2) *
+              Math.sin(Δλ/2) * Math.sin(Δλ/2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+
+    const distance = R * c; // in meters
+
+    // Score calculation
+    // Perfect score (5000) if within 10 meters
+    // Score decreases linearly until 2000 meters (minimum score: 0)
+    const maxDistance = 2000; // meters
+    const score = Math.max(0, Math.round(5000 * (1 - distance/maxDistance)));
+    
+    return score;
+  };
+
+  // Handle guess submission
+  const handleGuess = (guessCoords) => {
+    const newScore = calculateScore(guessCoords.lat, guessCoords.lng);
+    setScore(prevScore => prevScore + newScore);
+    
+    // Optional: Move to next location
+    setCurrentLocation(prev => (prev + 1) % locations.length);
+  };
 
   // This handler fires when the user clicks Play.
   const handlePlay = () => {
@@ -113,10 +152,10 @@ function App() {
         // New layout with full-screen PhotoSphere and overlay map
         <div style={{ position: 'relative', width: '100%', height: '100%' }}>
           <div ref={photoContainerRef} style={{ width: '100%', height: '100%' }}>
-            <PhotoSphereView />
+            <PhotoSphereView imageUrl={locations[currentLocation].imageUrl} />
           </div>
           <div ref={mapContainerRef} style={{ position: 'absolute', bottom: 20, right: 20 }}>
-            <MapView />
+            <MapView onGuess={handleGuess} />
           </div>
         </div>
       )}
