@@ -9,9 +9,9 @@ import './App.css';
 import { locations } from './data/locations';
 
 function App() {
-  const [mode, setMode] = useState('intro'); // 'intro' or 'split'
-  const [score, setScore] = useState(0); // Add score state
-  const [currentLocation, setCurrentLocation] = useState(0); // Index of current location
+  const [mode, setMode] = useState('welcome');
+  const [score, setScore] = useState(0);
+  const [currentLocation, setCurrentLocation] = useState(0);
   const mapContainerRef = useRef(null);
   const photoContainerRef = useRef(null);
 
@@ -54,9 +54,7 @@ function App() {
     setCurrentLocation(prev => (prev + 1) % locations.length);
   }
 
-  // This handler fires when the user clicks Play.
-  const handlePlay = () => {
-    // Switch mode; we'll then animate the layout in useEffect.
+  const handleStartGame = () => {
     setMode('split');
   };
 
@@ -111,55 +109,84 @@ function App() {
 
   return (
     <div className="App" style={{ height: '100vh', width: '100vw', overflow: 'hidden' }}>
-      {mode !== 'intro' && (
-        <div style={topBarStyle}>
-          <div style={scoreStyle}>
-            Score: {score}
-          </div>
-        </div>
-      )}
-
-      {mode === 'intro' ? (
-        // Intro mode: a full-screen map (cube) with a Play button overlay.
-        <div style={{ position: 'relative', width: '100%', height: '100%' }}>
-          <div ref={mapContainerRef} style={{ width: '100%', height: '100%' }}>
-            <Canvas camera={{ position: [0, 0, 5] }}>
-              <ambientLight intensity={0.5} />
-              <pointLight position={[10, 10, 10]} />
-              {/* For the intro, we use a simple cube. Clicking anywhere on it could also trigger play. */}
-              <mesh>
-                <boxGeometry args={[2, 2, 2]} />
-                <meshStandardMaterial color="orange" />
-              </mesh>
-              {/* Optional OrbitControls for debugging; disable zoom/pan as desired */}
-              <OrbitControls enableZoom={false} enablePan={false} />
-            </Canvas>
-          </div>
+      {mode === 'welcome' ? (
+        <div style={{
+          height: '100vh',
+          width: '100vw',
+          background: 'linear-gradient(135deg, #cc0033 0%, #990000 100%)',
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'center',
+          color: 'white',
+          padding: '20px'
+        }}>
+          <h1 style={{
+            fontSize: '4rem',
+            marginBottom: '20px',
+            textShadow: '2px 2px 4px rgba(0,0,0,0.3)'
+          }}>
+            Rutgers GeoGuessr
+          </h1>
+          <p style={{
+            fontSize: '1.5rem',
+            maxWidth: '600px',
+            textAlign: 'center',
+            marginBottom: '40px',
+            lineHeight: '1.6'
+          }}>
+            Test your knowledge of the Rutgers campus! Navigate through 360° images and guess their locations. How well do you know your university?
+          </p>
           <button
-            onClick={handlePlay}
+            onClick={handleStartGame}
             style={{
-              position: 'absolute',
-              bottom: 20,
-              left: '50%',
-              transform: 'translateX(-50%)',
-              padding: '10px 20px',
-              fontSize: '16px',
-              zIndex: 1,
+              padding: '15px 40px',
+              fontSize: '1.5rem',
+              backgroundColor: 'white',
+              color: '#cc0033',
+              border: 'none',
+              borderRadius: '30px',
+              cursor: 'pointer',
+              transition: 'all 0.3s ease',
+              boxShadow: '0 4px 6px rgba(0,0,0,0.2)',
+              fontWeight: 'bold'
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.transform = 'translateY(-2px)';
+              e.currentTarget.style.boxShadow = '0 6px 8px rgba(0,0,0,0.3)';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.transform = 'translateY(0)';
+              e.currentTarget.style.boxShadow = '0 4px 6px rgba(0,0,0,0.2)';
             }}
           >
-            Play
+            Start Game
           </button>
+          <div style={{
+            position: 'absolute',
+            bottom: '20px',
+            fontSize: '0.9rem',
+            opacity: 0.8
+          }}>
+            Created by Students, for Students
+          </div>
         </div>
       ) : (
-        // New layout with full-screen PhotoSphere and overlay map
-        <div style={{ position: 'relative', width: '100%', height: '100%' }}>
-          <div ref={photoContainerRef} style={{ width: '100%', height: '100%' }}>
-            <PhotoSphereView imageUrl={locations[currentLocation].imageUrl} />
+        <>
+          <div style={topBarStyle}>
+            <div style={scoreStyle}>
+              Score: {score}
+            </div>
           </div>
-          <div ref={mapContainerRef} style={{ position: 'absolute', bottom: 20, right: 20 }}>
-            <MapView onGuess={handleGuess} onNext={handleNext} currentLocation={currentLocation} />
+          <div style={{ position: 'relative', width: '100%', height: '100%' }}>
+            <div ref={photoContainerRef} style={{ width: '100%', height: '100%' }}>
+              <PhotoSphereView imageUrl={locations[currentLocation].imageUrl} />
+            </div>
+            <div ref={mapContainerRef} style={{ position: 'absolute', bottom: 20, right: 20 }}>
+              <MapView onGuess={handleGuess} onNext={handleNext} currentLocation={currentLocation} />
+            </div>
           </div>
-        </div>
+        </>
       )}
     </div>
   );
