@@ -1,10 +1,10 @@
-
+// src/App.jsx
 import React, { useState, useRef, useEffect } from 'react';
 import { gsap } from 'gsap';
 import MapView from './components/MapView';
 import PhotoSphereView from './components/PhotoSphereView';
 import { Canvas } from '@react-three/fiber';
-import { OrbitControls } from '@react-three/drei'; 
+import { OrbitControls } from '@react-three/drei'; // for debugging in intro
 import './App.css';
 import { locations } from './data/locations';
 
@@ -18,19 +18,19 @@ function App() {
   const mapContainerRef = useRef(null);
   const photoContainerRef = useRef(null);
 
-  
+  // Add this useEffect for shuffling locations when game starts
   useEffect(() => {
     const shuffled = [...locations].sort(() => Math.random() - 0.5);
     setShuffledLocations(shuffled);
   }, []);
 
-  
+  // Calculate score based on distance
   const calculateScore = (guessLat, guessLng) => {
     const actualLat = shuffledLocations[currentLocation].coordinates.lat;
     const actualLng = shuffledLocations[currentLocation].coordinates.lng;
     
-    
-    const R = 6371e3; 
+    // Calculate distance using Haversine formula (in meters)
+    const R = 6371e3; // Earth's radius in meters
     const φ1 = guessLat * Math.PI/180;
     const φ2 = actualLat * Math.PI/180;
     const Δφ = (actualLat-guessLat) * Math.PI/180;
@@ -41,18 +41,18 @@ function App() {
               Math.sin(Δλ/2) * Math.sin(Δλ/2);
     const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
 
-    const distance = R * c; 
+    const distance = R * c; // in meters
 
-    
-    
-    
-    const maxDistance = 2000; 
+    // Score calculation
+    // Perfect score (5000) if within 10 meters
+    // Score decreases linearly until 2000 meters (minimum score: 0)
+    const maxDistance = 2000; // meters
     const score = Math.max(0, Math.round(5000 * (1 - distance/maxDistance)));
     
     return score;
   };
 
-  
+  // Handle guess submission
   const handleGuess = (guessCoords) => {
     const newScore = calculateScore(guessCoords.lat, guessCoords.lng);
     setScore(prevScore => prevScore + newScore);
@@ -72,7 +72,7 @@ function App() {
     setMode('split');
   };
 
-  
+  // When mode changes to split, animate the containers.
   useEffect(() => {
     if (mode === 'split') {
       gsap.fromTo(
@@ -116,7 +116,7 @@ function App() {
   };
 
   const rightSectionStyle = {
-    width: '40px', 
+    width: '40px', // Match logo width for symmetry
     height: '40px'
   };
 

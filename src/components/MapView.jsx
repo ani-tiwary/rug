@@ -3,8 +3,8 @@ import { MapContainer, TileLayer, Marker, Popup, useMapEvents, useMap, Polyline 
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
 
-
-
+// import locations
+// import { locations } from '../data/locations';
 
 
 delete L.Icon.Default.prototype._getIconUrl;
@@ -14,14 +14,14 @@ L.Icon.Default.mergeOptions({
   shadowUrl: require('leaflet/dist/images/marker-shadow.png'),
 });
 
-
+// Create a new component to handle map invalidation
 function MapResizer({ isExpanded }) {
   const map = useMap();
   
   useEffect(() => {
-    
+    // Force map to recognize full size immediately
     map.invalidateSize();
-  }, [map]);  
+  }, [map]);  // Only run once when map is mounted
 
   return null;
 }
@@ -88,17 +88,17 @@ const MapView = ({ onGuess, onNext, currentLocation, locations }) => {
     height: isExpanded ? '80vh' : '200px',
     transition: 'all 0.3s ease-in-out',
     zIndex: 1000,
-    overflow: 'hidden'  
+    overflow: 'hidden'  // Hide overflow during transition
   };
 
   const mapWrapperStyle = {
     position: 'absolute',
-    width: '45vw',     
-    height: '80vh',    
+    width: '45vw',     // Always maintain full size
+    height: '80vh',    // Always maintain full size
     right: 0,
     bottom: 0,
     transition: 'all 0.3s ease-in-out',
-    transform: isExpanded ? 'scale(1)' : 'scale(0.4)',  
+    transform: isExpanded ? 'scale(1)' : 'scale(0.4)',  // Scale down when not expanded
     transformOrigin: 'bottom right'
   };
 
@@ -123,8 +123,8 @@ const MapView = ({ onGuess, onNext, currentLocation, locations }) => {
           <MapResizer isExpanded={isExpanded} />
           <MapEvents />
           <TileLayer
-            url="https:
-            attribution='&copy; <a href="https:
+            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+            attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
             tileSize={256}
             keepBuffer={8}
             updateWhenIdle={true}
