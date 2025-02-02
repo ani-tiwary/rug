@@ -7,7 +7,7 @@ export const locations = [
       lat: 40.523300,
       lng: -74.457894
     },
-    blurb: "The Busch Student Center is a hub of student activity, featuring dining options, study spaces, and the OIT help desk. It's one of the most frequented buildings on Busch Campus."
+    blurb: "The Busch Student Center is a hub of student activity, featuring dining options and numerous study spaces.It's one of the most frequented buildings on Busch Campus."
   },
   {
     id: 2,
